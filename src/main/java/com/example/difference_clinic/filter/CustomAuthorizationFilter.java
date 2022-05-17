@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-    import java.util.stream.Stream;
+import java.util.stream.Stream;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,19 +26,24 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import lombok.AllArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+import lombok.AllArgsConstructor;
+
+// import static java.util.Arrays.stream;
+@Slf4j
+
 @AllArgsConstructor
+
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
-    public static final String APPLICATION_JSON_VALUE="applicaion/json";
+    public static final String APPLICATION_JSON_VALUE = "applicaion/json";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         if (request.getServletPath().equals("/api/login")
-        ||request.getServletPath().equals("/api/token/refresh")) {
+                || request.getServletPath().equals("/api/token/refresh")) {
             filterChain.doFilter(request, response);
 
         } else {
@@ -61,24 +66,22 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             username, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    filterChain.doFilter(request,response)
-                    ;
+                    filterChain.doFilter(request, response);
                 } catch (Exception exception) {
-            
+                    log.error("Error logging in:{}", exception.getMessage());
                     response.setHeader("error", exception.getMessage());
-                   // response.sendError(FORBIDDEN.value());
-                   response.setStatus(FORBIDDEN.value());
+                    // response.sendError(FORBIDDEN.value());
+                    response.setStatus(FORBIDDEN.value());
                     Map<String, String> error = new HashMap<>();
                     error.put("error_message", exception.getMessage());
                     response.setContentType(APPLICATION_JSON_VALUE);
                     new ObjectMapper().writeValue(response.getOutputStream(), error);
-                
-                } 
 
-            }else{
+                }
 
-                filterChain.doFilter(request,response);
+            } else {
 
+                filterChain.doFilter(request, response);
 
             }
 
@@ -87,4 +90,3 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     }
 
 }
- 

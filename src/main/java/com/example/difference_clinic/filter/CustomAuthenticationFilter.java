@@ -1,4 +1,5 @@
 package com.example.difference_clinic.filter;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,21 +22,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import lombok.AllArgsConstructor;
-
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     // log.debug(": {}");
-//    public static final String APPLICATION_JSON_VALUE="applicaion/json";
-
+    // public static final String APPLICATION_JSON_VALUE="applicaion/json";
 
     private final AuthenticationManager authenticationManager;
+
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
- 
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -43,6 +43,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        log.info("Username is: {} ", username);
+        log.info("password is: {}", password);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);
 
@@ -60,7 +62,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                 .withIssuer(request.getRequestURI().toString())
                 .withClaim("roles", user.getAuthorities()
-                .stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                        .stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
 
         // jwt from import com.auth0.jwt.JWT;
@@ -70,7 +72,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURI().toString())
                 .sign(algorithm);
 
-        //response.setHeader("access_token", access_token);
+        // response.setHeader("access_token", access_token);
         // response.setHeader("refresh_token", refresh_token);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", access_token);

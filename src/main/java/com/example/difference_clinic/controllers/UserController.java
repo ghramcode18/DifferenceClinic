@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +24,6 @@ import com.example.difference_clinic.repositories.UserRepo;
 import com.example.difference_clinic.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,19 +32,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
-
-public class UserController{
-    
-    private  UserService userService;
+@Slf4j
+public class UserController {
+    private final UserService userService;
     private UserRepo userRepo;
     public static final String APPLICATION_JSON_VALUE = "applicaion/json";
-
-    
 
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getUsers() {
@@ -71,7 +70,6 @@ public class UserController{
         return ResponseEntity.ok().build();
     }
 
-    
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -89,7 +87,7 @@ public class UserController{
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURI().toString())
                         .withClaim("roles", user.getRoles()
-                              .stream().map(Role::getName).collect(Collectors.toList()))
+                                .stream().map(Role::getName).collect(Collectors.toList()))
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();
@@ -99,6 +97,7 @@ public class UserController{
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
             } catch (Exception exception) {
+                log.error("Error logging in:{}", exception.getMessage());
                 response.setHeader("error", exception.getMessage());
                 response.setStatus(FORBIDDEN.value());
                 Map<String, String> error = new HashMap<>();
@@ -116,58 +115,42 @@ public class UserController{
 
     }
 
-// @RequestMapping("/testInteger")
-//     public String genint(User user) {
-//         Random random ;
-        
-//         int intRange;
-//         try {
+    // @RequestMapping("/testInteger")
+    // public String genint(User user) {
+    // Random random ;
 
+    // int intRange;
+    // try {
 
-//             for (int i = 0; i < 10; i++) {
-//                 intRange = generateRandomIntIntRange(1000, 10000);
-//                 String num = Integer.toString(intRange);
+    // for (int i = 0; i < 10; i++) {
+    // intRange = generateRandomIntIntRange(1000, 10000);
+    // String num = Integer.toString(intRange);
 
-//                 random = new Random();
-//                 user.setNum(num);
-//                 userRepo.save(user);
-//             }
-//         } catch (Exception e) {
-//             // TODO Auto-generated catch block
-//             e.printStackTrace();
-//         }
-        
-//         return user.getNum();
-        
-//     }
+    // random = new Random();
+    // user.setNum(num);
+    // userRepo.save(user);
+    // }
+    // } catch (Exception e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
 
-//     public static int generateRandomIntIntRange(int min, int max) {
-//         Random r = new Random();
-//         return r.nextInt((max - min) + 1) + min;
+    // return user.getNum();
 
-//     }
+    // }
 
-class RoleToUserForm {
+    // public static int generateRandomIntIntRange(int min, int max) {
+    // Random r = new Random();
+    // return r.nextInt((max - min) + 1) + min;
 
-    private String username;
-    private String roleName;
+    // }
+    @Data
+    @Setter
+    @Getter
+    class RoleToUserForm {
 
-    public String getUsername() {
-        return this.username;
+        private String username;
+        private String roleName;
+
     }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getRoleName() {
-        return this.roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-
-}
 }
