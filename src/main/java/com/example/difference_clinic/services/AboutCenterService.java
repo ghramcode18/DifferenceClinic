@@ -8,21 +8,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AboutCenterService {
-   
-    @Autowired
-    private AboutCenterRepo aboutCenterRepo;
 
-    public AboutCenterEntity getAboutCenter() {
-		
+	@Autowired
+	private AboutCenterRepo aboutCenterRepo;
+
+	public AboutCenterEntity getAboutCenter() {
+
 		return aboutCenterRepo.findById(1);
 	}
-    
 
-    public AboutCenterEntity updateAboutCenter(int id,AboutCenterEntity aboutCenterEntity) {
+	public AboutCenterEntity updateAboutCenter(int id, AboutCenterEntity aboutCenterEntity) {
 		try {
 			return aboutCenterRepo.save(aboutCenterEntity);
 		} catch (Exception e) {
-	
+
 		}
 		return null;
 	}

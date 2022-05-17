@@ -25,13 +25,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    // private final UserDetailsService userDetailsService;
-
-    // // this constractors because i deal with final value with intializ
-    private   final   BCryptPasswordEncoder bcryptPasswordEncoder;
+    private final BCryptPasswordEncoder bcryptPasswordEncoder;
     private final UserDetailsService userDetailsService;
 
-   
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bcryptPasswordEncoder);
@@ -46,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // http.authorizeRequests().anyRequest().permitAll();
         // "/api/login/**", "/api/token/refresh/**"
-        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/login", "/api/token/refresh/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/api/v1/**").hasAnyAuthority("ROLE_USER");
@@ -60,6 +56,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
 
 }

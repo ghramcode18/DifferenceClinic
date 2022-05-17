@@ -19,8 +19,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.difference_clinic.entities.Role;
-import com.example.difference_clinic.entities.UserEntity;
-import com.example.difference_clinic.repositories.UserRepo;
+import com.example.difference_clinic.entities.Account;
+import com.example.difference_clinic.repositories.UserEntityRepo;
 import com.example.difference_clinic.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,17 +43,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 @Slf4j
 public class UserController {
-    private final UserService userService;
-    private UserRepo userRepo;
+    private   final UserService userService;
+    private UserEntityRepo userRepo;
     public static final String APPLICATION_JSON_VALUE = "applicaion/json";
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserEntity>> getUsers() {
+    public ResponseEntity<List<Account>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<UserEntity> saveUser(@RequestBody UserEntity user) {
+    public ResponseEntity<Account> saveUser(@RequestBody Account user) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
@@ -81,12 +81,12 @@ public class UserController {
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String username = decodedJWT.getSubject();
-                UserEntity user = userService.getUser(username);
+                Account account = userService.getUser(username);
                 String access_token = JWT.create()
-                        .withSubject(user.getUserName())
+                        .withSubject(account.getUserName())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURI().toString())
-                        .withClaim("roles", user.getRoles()
+                        .withClaim("roles", account.getRoles()
                                 .stream().map(Role::getName).collect(Collectors.toList()))
                         .sign(algorithm);
 

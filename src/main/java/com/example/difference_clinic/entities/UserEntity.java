@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,11 +29,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data 
 @Setter 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "UserEntity")
 public class UserEntity {
   
+    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -49,11 +51,6 @@ public class UserEntity {
     private String socialStatus;
     private boolean isActive;
     private String codeNum;
-    // @JsonIgnoreProperties(value = {"user"},allowSetters = true)
-    // @OneToMany(mappedBy = "user")
-    // private List<QuestionEntity> questions;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    
 
 }
