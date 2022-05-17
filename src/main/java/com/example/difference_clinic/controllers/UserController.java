@@ -20,7 +20,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.difference_clinic.entities.Role;
 import com.example.difference_clinic.entities.Account;
-import com.example.difference_clinic.repositories.UserEntityRepo;
 import com.example.difference_clinic.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -44,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserController {
     private   final UserService userService;
-    private UserEntityRepo userRepo;
     public static final String APPLICATION_JSON_VALUE = "applicaion/json";
 
     @GetMapping("/users")
