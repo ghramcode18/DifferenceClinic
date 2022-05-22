@@ -22,14 +22,14 @@ public class QuestionEntity {
     private String answer;
     private boolean common;
     @JsonIgnoreProperties(value = {"question"},allowSetters = true)
-    @ManyToOne(targetEntity = UserEntity.class)
-    private UserEntity user;
+    @ManyToOne(targetEntity = User.class)
+    private User user;
 
 
     public QuestionEntity() {
     }
 
-    public QuestionEntity(Long id, String questionText, String answer, boolean common, UserEntity user) {
+    public QuestionEntity(Long id, String questionText, String answer, boolean common, User user) {
         this.id = id;
         this.questionText = questionText;
         this.answer = answer;
@@ -73,11 +73,11 @@ public class QuestionEntity {
         this.common = common;
     }
 
-    public UserEntity getUser() {
+    public User getUser() {
         return this.user;
     }
 
-    public void setUser(UserEntity user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -101,7 +101,7 @@ public class QuestionEntity {
         return this;
     }
 
-    public QuestionEntity user(UserEntity user) {
+    public QuestionEntity user(User user) {
         setUser(user);
         return this;
     }
