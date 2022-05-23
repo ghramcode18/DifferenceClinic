@@ -139,8 +139,19 @@ public class AuthController {
 
     user.setRoles(roles);
     userRepository.save(user);
+    
+    Authentication authentication = authenticationManager
+        .authenticate(new UsernamePasswordAuthenticationToken(signUpRequest.getUsername(), 
+            signUpRequest.getPassword()));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    return ResponseEntity.ok().body(user);
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+    .body(user);
 
   }
 
