@@ -82,6 +82,10 @@ public class User {
         this.password = password;
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
     public User(Long id, String username, String email, String password, Set<Role> roles, Boolean status) {
         this.id = id;
         this.username = username;
