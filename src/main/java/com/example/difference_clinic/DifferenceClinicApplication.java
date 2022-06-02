@@ -15,9 +15,5 @@ public class DifferenceClinicApplication {
  }
 
 
- @Bean
- PasswordEncoder passwordEncoder() {
-     return new BCryptPasswordEncoder();
 
- }
 }
