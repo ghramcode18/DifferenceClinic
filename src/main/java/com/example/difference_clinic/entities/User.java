@@ -50,16 +50,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Size(max = 20)
     private String username;
 
-    @NotBlank
     @Size(max = 50)
     @Email
     private String email;
 
-    @NotBlank
     @Size(max = 120)
     private String password;
 
@@ -70,9 +67,6 @@ public class User {
    
     private String firstName;
     private String lastName;
-    
-
-   
 
     private String mobile;
     private String gender;
