@@ -45,15 +45,16 @@ import lombok.Setter;
         @UniqueConstraint(columnNames = "email")
 })
 public class User {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstName;
-    private String lastName;
+
     @NotBlank
     @Size(max = 20)
     private String username;
 
+    @NotBlank
     @Size(max = 50)
     @Email
     private String email;
@@ -61,6 +62,18 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+   
+    private String firstName;
+    private String lastName;
+    
+
+   
+
     private String mobile;
     private String gender;
     private String job;
@@ -72,10 +85,7 @@ public class User {
 
     private String zipCode;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
-
+   
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
@@ -96,9 +106,8 @@ public class User {
 
     }
 
-    public User(String username, String email, String password, Boolean status) {
+    public User(String username,  String password, Boolean status) {
         this.username = username;
-        this.email = email;
         this.password = password;
         this.status = status;
 
@@ -121,5 +130,22 @@ public class User {
         this.roles = roles;
     }
 
+
+
+    public User(Long id, String firstName, String lastName, String username, String password, String mobile, String gender, String job, Date birthday, Long score, Boolean status, String zipCode, Set<Role> roles) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.mobile = mobile;
+        this.gender = gender;
+        this.job = job;
+        this.birthday = birthday;
+        this.score = score;
+        this.status = status;
+        this.zipCode = zipCode;
+        this.roles = roles;
+    }
 
 }
